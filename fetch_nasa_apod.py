@@ -6,6 +6,7 @@ import os
 import requests
 import os.path
 
+
 def fetch_nasa_image(token, directory):
     payload = {
         "count": "40",
@@ -23,6 +24,7 @@ def fetch_nasa_image(token, directory):
     for index, img_url in enumerate(images_link):
         filename = f'nasa_apod_{index}.jpg'
         save_image(img_url, directory / filename)
+
 
 def main():
     load_dotenv()
