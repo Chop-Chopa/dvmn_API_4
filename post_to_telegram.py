@@ -18,8 +18,14 @@ def main():
     telegram_chat_id = os.environ["TG_CHAT_ID"]
 
     parser = argparse.ArgumentParser(description="Скрипт для автоматической публикации фото в Telegram.")
-    parser.add_argument('hours', type=int, default=int(os.environ["DELAY_HOURS"]), help="Задержка между публикациями в часах")
+    parser.add_argument('--hours', type=int, default=int(os.environ["DELAY_HOURS"]), help="Задержка между публикациями в часах")
+    parser.add_argument('--photo', type=str, help="Укажите фото для публикации (если не указано, публикуется случайное)")
     args = parser.parse_args()
+
+    if args.photo:
+        message_photo(telegram_chat_id, telegram_token, args.photo)
+        return
+
 
     image_files = [image for image in os.listdir('images')]
     random.shuffle(image_files)
