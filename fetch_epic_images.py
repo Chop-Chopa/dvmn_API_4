@@ -11,28 +11,32 @@ def fetch_epic_images(token, directory):
     }
     response = requests.get("https://api.nasa.gov/EPIC/api/natural", params=payload)
     response.raise_for_status()
-    url_image_nasa = response.json()
-    for image in range(len(url_image_nasa)):
-        id_image = response.json()[image]["image"]
-        earth_link = response.json()[image]["date"].split(" ")
-        date = earth_link[0].split("-")
-        url = "https://api.nasa.gov/EPIC/archive/natural/2019/05/30/png/epic_1b_20190530011359.png?api_key=zIXSIafgWe5Tk0LmGZyx2yZXK7GieW12Xii7c78I".split("/")
-        url[6:9]=date[0:3]
-        new_url = '/'.join(url)
-        nasa_url = new_url.replace("epic_1b_20190530011359", id_image)
-        filename = f'earth_{image}.jpg'
-        save_image(nasa_url, directory / filename)
+    images_metadata = response.json()
+
+    for index, image_metadata in enumerate(images_metadata):
+        image_id = image_metadata["image"]
+        date = image_metadata["date"].split()[0]
+        year, month, day = date.split("-")
+
+        base_url = f"https://api.nasa.gov/EPIC/archive/natural/{year}/{month}/{day}/png/{image_id}.png"
+        params = {"api_key": token}
+
+        response_image = requests.get(base_url, params=params)
+        response_image.raise_for_status()
+
+        filename = f'earth_{index}.jpg'
+        save_image(response_image.url, directory / filename)
 
 
 def main():
     load_dotenv()
 
-    nasa_acess_token = os.environ["NASA_TOKEN"]
+    nasa_access_token = os.environ["NASA_TOKEN"]
 
     output_dir = Path('images')
     output_dir.mkdir(exist_ok=True)
 
-    fetch_epic_images(nasa_acess_token, output_dir)
+    fetch_epic_images(nasa_access_token, output_dir)
 
 
 if __name__ == '__main__':
