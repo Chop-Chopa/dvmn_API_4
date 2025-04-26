@@ -4,11 +4,8 @@ import argparse
 import requests
 
 
-def fetch_spacex_images(launch_id, directory):
-    if launch_id:
-        url = f"https://api.spacexdata.com/v5/launches/{launch_id}"
-    else:
-        url = "https://api.spacexdata.com/v5/launches/latest"
+def fetch_spacex_images(launch_id=None, directory=None):
+    url = f"https://api.spacexdata.com/v5/launches/{launch_id}" if launch_id else "https://api.spacexdata.com/v5/launches/latest"
 
     response = requests.get(url)
     response.raise_for_status()
@@ -20,8 +17,8 @@ def fetch_spacex_images(launch_id, directory):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Скачиваний фотографий SpaceX")
-    parser.add_argument('launch_id', help='Идентификатор запуска')
+    parser = argparse.ArgumentParser(description="Скрипт для скачивания фотографий SpaceX по идентификатору запуска.")
+    parser.add_argument('launch_id', help='Идентификатор запуска SpaceX, для которого нужно скачать фотографии.')
     args = parser.parse_args()
 
     output_dir = Path("images")
