@@ -6,9 +6,16 @@ import time
 import os
 
 
-def message_photo(chat_id, token, filename):
+def send_photo_telegram(chat_id, token, filename):
     bot = telegram.Bot(token=token)
-    bot.send_document(chat_id=chat_id, document=open(f'images/{filename}', 'rb'))
+    with open(filename, 'rb') as file:
+        bot.send_document(chat_id=chat_id, document=file)
+
+
+def get_random_image_files():
+    image_files = os.listdir('images')
+    random.shuffle(image_files)
+    return image_files
 
 
 def main():
@@ -23,20 +30,17 @@ def main():
     args = parser.parse_args()
 
     if args.photo:
-        message_photo(telegram_chat_id, telegram_token, args.photo)
+        send_photo_telegram(telegram_chat_id, telegram_token, args.photo)
         return
 
-
-    image_files = [image for image in os.listdir('images')]
-    random.shuffle(image_files)
+    image_files = get_random_image_files()
 
     while True:
         if not image_files:
-            image_files = [image for image in os.listdir('images')]
-            random.shuffle(image_files)
+            image_files = get_random_image_files()
 
         photo_filename = image_files.pop(0)
-        message_photo(telegram_chat_id,telegram_token,photo_filename)
+        send_photo_telegram(telegram_chat_id, telegram_token, photo_filename)
         time.sleep(args.hours * 60 * 60)
 
 
