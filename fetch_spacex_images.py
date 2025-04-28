@@ -4,8 +4,8 @@ import argparse
 import requests
 
 
-def fetch_spacex_images(launch_id=None, directory=None):
-    url = f"https://api.spacexdata.com/v5/launches/{launch_id}" if launch_id else "https://api.spacexdata.com/v5/launches/latest"
+def fetch_spacex_images(launch_id="latest", directory=None):
+    url = f"https://api.spacexdata.com/v5/launches/{launch_id}"
 
     response = requests.get(url)
     response.raise_for_status()
