@@ -11,11 +11,11 @@ def fetch_epic_images(token, directory):
     }
     response = requests.get("https://api.nasa.gov/EPIC/api/natural", params=payload)
     response.raise_for_status()
-    images_links = response.json()
+    images = response.json()
 
-    for index, image_info in enumerate(images_links):
-        image_id = image_info["image"]
-        date = image_info["date"].split()[0]
+    for index, image in enumerate(images):
+        image_id = image["image"]
+        date = image["date"].split()[0]
         year, month, day = date.split("-")
 
         image_url = (
