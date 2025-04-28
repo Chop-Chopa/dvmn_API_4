@@ -11,21 +11,20 @@ def fetch_epic_images(token, directory):
     }
     response = requests.get("https://api.nasa.gov/EPIC/api/natural", params=payload)
     response.raise_for_status()
-    images_metadata = response.json()
+    images_links = response.json()
 
-    for index, image_metadata in enumerate(images_metadata):
-        image_id = image_metadata["image"]
-        date = image_metadata["date"].split()[0]
+    for index, image_info in enumerate(images_links):
+        image_id = image_info["image"]
+        date = image_info["date"].split()[0]
         year, month, day = date.split("-")
 
-        base_url = f"https://api.nasa.gov/EPIC/archive/natural/{year}/{month}/{day}/png/{image_id}.png"
-        params = {"api_key": token}
-
-        response_image = requests.get(base_url, params=params)
-        response_image.raise_for_status()
+        image_url = (
+            f"https://api.nasa.gov/EPIC/archive/natural/{year}/{month}/{day}/png/{image_id}.png"
+            f"?api_key={token}"
+        )
 
         filename = f'earth_{index}.jpg'
-        save_image(response_image.url, directory / filename)
+        save_image(image_url, directory / filename)
 
 
 def main():
